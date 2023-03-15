@@ -1,0 +1,36 @@
+.col-4 {
+    height: 250px;
+    padding: 15px;
+}
+
+.card-body {
+    height: 220px;
+}
+
+.card-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap:20px;
+}
+
+.btn {
+    width: 100px;
+}
+
+.movie-genres{
+    margin-top:20px;
+}
+
+.movie-tags{
+    margin-top:20px;
+}
+
+.tag-form{
+    margin-top:20px;
+}
+
+.tag {
+    display:flex;
+    justify-content: space-evenly;
+}
