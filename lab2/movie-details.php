@@ -8,6 +8,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $movieId = $row['movieId'];
     $genres = $row['genres'];
 }
+$rating = get_avg_rating($id)
 ?>
 <!doctype html>
 <html>
@@ -63,20 +64,45 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </div>
                 <?php }
                     ?>
+                    <div class="row" >
+                        <div class="col-2">
+                    <h5 class="card-text">Average rating: <?php echo $rating ?></h5>
+                    </div>
+                    <div class="col-2">
+                    <a name="ratings" id="" class="btn btn-primary" href="ratings.php?id=<?php echo ($id) ?>" role="button">See all ratings</a>
+                    </div>
+                    </div>
+                </h4>
             </div>
             <form action="insert-tag.php?movieId=<?php echo $movieId ?>" method="post" class="tag-form">
             <h5 class="card-text">Add tag:</h5>
               <div class="form-group">
                 <label for="userId">userId</label>
-                <input type="text" class="form-control" name="userId" id="" aria-describedby="helpId" placeholder="">
+                <input type="text" class="form-control" name="userId" id="" aria-describedby="helpId" placeholder="" required>
                 <small id="helpId" class="form-text text-muted">Insert userId</small>
               </div>
 
               <div class="form-group">
                 <label for="tag">Tag</label>
                 <input type="text" class="form-control" name="tag" id="" aria-describedby="tagHelpId"
-                  placeholder="">
+                  placeholder="" required>
                 <small id="tagHelpId" class="form-text text-muted">Insert tag</small>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <form action="insert-rating.php?movieId=<?php echo $movieId ?>" method="post" class="rating-form">
+            <h5 class="card-text">Add rating:</h5>
+              <div class="form-group">
+                <label for="userId">userId</label>
+                <input type="text" class="form-control" name="userId" id="" aria-describedby="helpId" placeholder="" required>
+                <small id="helpId" class="form-text text-muted">Insert userId</small>
+              </div>
+
+              <div class="form-group">
+                <label for="rating">Rating</label>
+                <input type="text" class="form-control" name="rating" id="" aria-describedby="ratingHelpId"
+                  placeholder="" required>
+                <small id="ratingHelpId" class="form-text text-muted">Insert rating</small>
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
             </form>
