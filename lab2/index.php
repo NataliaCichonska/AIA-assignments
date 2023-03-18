@@ -26,6 +26,10 @@ require_once("functions.php");
         <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#add" type="button" role="tab"
           aria-controls="add" aria-selected="false">Add</button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab"
+          aria-controls="user" aria-selected="false">User</button>
+      </li>
     </ul>
   </header>
   <main>
@@ -41,14 +45,7 @@ require_once("functions.php");
         </div>
       </div>
 
-
-
-
-
-
       <div class="tab-pane" id="add" role="tabpanel" aria-labelledby="add-tab">
-
-
         <div class="container col-8">
           <div class="row">
             <form action="insert.php" method="post">
@@ -57,7 +54,6 @@ require_once("functions.php");
                 <input type="text" class="form-control" name="title" id="" aria-describedby="helpId" placeholder="" required>
                 <small id="helpId" class="form-text text-muted">Insert movie's title</small>
               </div>
-
               <div class="form-group">
                 <label for="genres">Genres</label>
                 <input type="text" class="form-control" name="genres" id="" aria-describedby="genresHelpId"
@@ -68,8 +64,23 @@ require_once("functions.php");
             </form>
           </div>
         </div>
+      </div>
+    </div>
 
-
+    <div class="tab-content">
+      <div class="tab-pane" id="user" role="tabpanel" aria-labelledby="user-tab">
+        <div class="container col-8">
+          <div class="row">
+            <form action="insert-user.php" method="post">
+              <div class="form-group">
+                <label for="userId">User</label>
+                <input type="text" class="form-control" name="userId" id="" aria-describedby="helpId" placeholder="" required>
+                <small id="helpId" class="form-text text-muted">Insert user Id</small>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </main>

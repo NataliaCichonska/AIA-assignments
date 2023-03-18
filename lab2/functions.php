@@ -110,6 +110,18 @@ function insert_rating($userId, $rating, $movieId){
   }
 }
 
+function insert_user($userId){
+  global $conn;
+  $now_time = time();
+  $q = "INSERT into users (userId) values(\"$userId\")";
+  $result = $conn->query($q);
+  if ($result === TRUE) {
+    header("Location: index.php");
+  } else {
+    echo "Error updating record: " . $conn->error;
+  }
+}
+
 function update_movie($title, $genres, $id)
 {
   global $conn;
