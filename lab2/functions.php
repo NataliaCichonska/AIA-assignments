@@ -50,23 +50,25 @@ function get_tags($id)
   return $result;
 }
 
-function get_ratings($id){
+function get_ratings($id)
+{
   global $conn;
   $result = $conn->query("SELECT * FROM ratings where movieId=$id");
   return $result;
 }
 
-function get_avg_rating($id){
+function get_avg_rating($id)
+{
   global $conn;
   $result = $conn->query("SELECT * FROM ratings where movieId=$id");
   $sum = 0;
   $cnt = 0;
   while ($row = mysqli_fetch_assoc($result)) {
-    $sum = $sum + $row["rating"];
+    $sum = $sum + floatval($row["rating"]);
     $cnt = $cnt + 1;
   }
   if ($cnt > 0) {
-    return $sum/$cnt;
+    return $sum / $cnt;
   } else {
     return 0;
   }
@@ -98,7 +100,8 @@ function insert_tag($userId, $tag, $movieId)
   }
 }
 
-function insert_rating($userId, $rating, $movieId){
+function insert_rating($userId, $rating, $movieId)
+{
   global $conn;
   $now_time = time();
   $q = "INSERT into ratings (userId,movieId,rating,timestamp) values(\"$userId\", \"$movieId\",  \"$rating\",\"$now_time\")";
@@ -110,7 +113,8 @@ function insert_rating($userId, $rating, $movieId){
   }
 }
 
-function insert_user($userId){
+function insert_user($userId)
+{
   global $conn;
   $now_time = time();
   $q = "INSERT into users (userId) values(\"$userId\")";
