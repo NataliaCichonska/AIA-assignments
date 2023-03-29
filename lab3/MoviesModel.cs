@@ -19,7 +19,7 @@ public string? Name {get; set;}
 }
 public class Rating {
 public int RatingID {get; set;}
-public string RatingValue {get; set;}
+public float RatingValue {get; set;}
 public virtual Movie? RatedMovie {get; set;}
 public virtual User? RatingUser {get;set;}
 }

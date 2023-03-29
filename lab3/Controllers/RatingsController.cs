@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 namespace lab3.Controllers;
 [ApiController]
 [Route("[controller]")]
@@ -21,29 +22,63 @@ public class RatingsController: ControllerBase {
             var tokens = line.Split(",");
             if (tokens.Length < 2) continue;
             string RatingValue = tokens[2];
-            string RatedMovie = tokens[1];
-            string RatingUser = tokens[0];
+            string RatedMovieID = tokens[1];
+            string RatingUserId = tokens[0];
 
             Rating r = new Rating();
-            r.RatingValue = RatingValue;
+            int res=0;
+            r.RatingValue=float.Parse(RatingValue, CultureInfo.InvariantCulture.NumberFormat);
+            int.TryParse(RatingValue,out res);
 
-            IQueryable < Movie > movieResult = dbContext.Movies.Where(e => e.MovieID == int.Parse(RatedMovie));
+            IQueryable < Movie > movieResult = dbContext.Movies.Where(e => e.MovieID == int.Parse(RatedMovieID));
+            System.Console.Write(movieResult.Count());
+            System.Console.Write("\n");
+            
             if(movieResult.Count() ==0) {
                 continue;
             }
+            System.Console.Write(movieResult.First().MovieID);
+            System.Console.Write("\n");
             r.RatedMovie = movieResult.First();
 
             User user = new User();
-            user.UserID=int.Parse(RatingUser);
+            user.UserID = int.Parse(RatingUserId);
             user.Name="";
-            user=new User();
+            IQueryable < User > userResults = dbContext.Users.Where(e => e.UserID == user.UserID);
+                if (userResults.Count() > 0) {
+                    user = userResults.First();
+                }
+                else {
+                    dbContext.Users.Add(user);
+                    dbContext.SaveChanges();
+                }
             r.RatingUser = user;
+            user=new User();
 
-            if (!dbContext.Ratings.Any(e => e.RatingID == r.RatingID)) dbContext.Ratings.Add(r);
+            dbContext.Ratings.Add(r);
 
         }
         dbContext.SaveChanges();
         return "OK";
     }
 
+//w sortedRatingsList Mvie i User są zawsze null...
+    [HttpGet("GetUserRecommendations/{userId}")]
+    public IEnumerable<Movie> GetUserRecommendations(int userId) {
+        System.Console.Write("wchodzę");
+        MoviesContext dbContext = new MoviesContext();
+        IEnumerable <Rating> usersRatings = dbContext.Ratings.Where(
+            r => r.RatingUser.UserID == userId
+        );
+        List < Movie > ratedMovies = new List < Movie > ();
+        usersRatings.ToList();
+        List<Rating> SortedRatingsList = usersRatings.ToList().OrderBy(o=>o.RatingValue).ToList();
+        foreach(Rating rating in SortedRatingsList){
+            System.Console.Write(rating.RatingID);
+        }
+            
+        
+        return ratedMovies; 
+        }
 }
+
