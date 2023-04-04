@@ -183,4 +183,37 @@ public class MoviesController : ControllerBase
 
     }
 
+    [HttpGet("GetRecommendationSet/{userId}/{size}")]
+    public IEnumerable<Movie> GetRecommendationSet(int userId, int size)
+    {
+        MoviesContext dbContext = new MoviesContext();
+
+        RatingsController ratingsController = new RatingsController();
+        List<Movie> recommendationSet = new List<Movie>();
+        IEnumerable<Rating> userRatings = ratingsController.GetSortedUserRatings(userId);
+        foreach (Rating rating in userRatings)
+        {
+            IEnumerable<Movie> similarMovies = GetSimilarMovies(rating.RatedMovie.MovieID, 0.9);
+            foreach (Movie movie in similarMovies)
+            {
+                if (recommendationSet.Count == size)
+                {
+                    return recommendationSet;
+                }
+                else
+                {
+                    if (!recommendationSet.Any(m => m.MovieID == movie.MovieID))
+                    {
+                        recommendationSet.Add(movie);
+
+                    }
+
+                }
+            }
+        }
+
+        return recommendationSet;
+
+    }
+
 }
