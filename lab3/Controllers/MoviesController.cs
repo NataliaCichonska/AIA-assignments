@@ -129,21 +129,28 @@ public class MoviesController : ControllerBase
         return (m1m2) / (Math.Sqrt(m12) * Math.Sqrt(m22));
     }
 
-    //TODO: niedziała :((
-    /*[HttpGet("GetMoviesSharingGenres/{movieId}")]
+    [HttpGet("GetMoviesSharingGenres/{movieId}")]
     public IEnumerable<Movie> GetMoviesSharingGenres(int movieId)
     {
         MoviesContext dbContext = new MoviesContext();
-
-        IEnumerable<Movie> moviesWithId = dbContext.Movies.Include(movie => movie.Genres).Where(m => m.MovieID == movieId);
-        if (moviesWithId.Count() < 1)
+        IEnumerable<Genre> genres = dbContext.Genres.Where(genre => genre.Movies.Any(movie => movie.MovieID == movieId)).ToList();
+        if (genres.Count() < 1)
         {
             throw new ArgumentException("invalid movie id");
         }
-        Movie movie = moviesWithId.First();
-        //IEnumerable<Movie> resultMovies = dbContext.Movies.Where(m => m.Genres.Any(g=>movie.Genres.Any(genre => g.GenreID == genre.GenreID)));
-        return moviesWithId;
-    }*/
+        List<Movie> moviesList = new List<Movie>();
+        foreach (Genre genre in genres)
+        {
+            IEnumerable<Movie> movies = dbContext.Movies.Where(movie => movie.Genres.Any(g => g.GenreID == genre.GenreID));
+            foreach (Movie movie in movies)
+            {
+                if (!moviesList.Any(m => m.MovieID == movie.MovieID))
+                    moviesList.Add(movie);
+            }
+        }
+        return moviesList;
+
+    }
 
     [HttpGet("GetSimilarMovies/{movieId}/{treshhold}")]
     public IEnumerable<Movie> GetSimilarMovies(int movieId, double treshhold)
@@ -163,14 +170,15 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet("GetSimilarMoviesToTopOne/{userId}")]
-    public IEnumerable<Movie> GetSimilarMoviesToTopOne(int userId){
+    public IEnumerable<Movie> GetSimilarMoviesToTopOne(int userId)
+    {
 
         MoviesContext dbContext = new MoviesContext();
         IEnumerable<Rating> usersRatings = dbContext.Ratings.Include(r => r.RatedMovie).Where(
             r => r.RatingUser.UserID == userId
         );
-        Movie topMovie = usersRatings.OrderByDescending(r=>r.RatingValue).First().RatedMovie;
-        
+        Movie topMovie = usersRatings.OrderByDescending(r => r.RatingValue).First().RatedMovie;
+
         return GetSimilarMovies(topMovie.MovieID, 0.9);
 
     }
