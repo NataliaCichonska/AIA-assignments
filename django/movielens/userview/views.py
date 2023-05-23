@@ -36,8 +36,6 @@ class IndexView(generic.ListView):
     template_name = 'userview/index.html'
     context_object_name = 'movies'
     paginate_by=7
-    # p=Paginator(Movie,4)
-    # print(p.page(1).object_list)
     def get_queryset(self):
         return Movie.objects.order_by('-title')
 class MovieView(generic.DetailView):
@@ -49,6 +47,32 @@ class GenreView(generic.DetailView):
     template_name = 'userview/genre.html'
     context_object_name = 'response'
 
+class SearchView(generic.ListView):
+    template_name = 'userview/search.html'
+    context_object_name = 'movies'
+    paginate_by = 7
+
+    def get_queryset(self):
+        queryset = Movie.objects.order_by('-title')
+
+        genre_filter = self.request.GET.get('genre')
+        title_filter = self.request.GET.get('title')
+        rating_filter = self.request.GET.get('rating')
+
+        if title_filter:
+            queryset = queryset.filter(title__icontains=title_filter)
+
+        if genre_filter:
+            queryset = queryset.filter(genres__name__icontains=genre_filter)
+
+        if rating_filter:
+            queryset = queryset.filter(rating__value__gte=rating_filter)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['genres'] = Genre.objects.order_by('-name')
+        return context
 
 def rated_request(request):
     if request.method == "GET":

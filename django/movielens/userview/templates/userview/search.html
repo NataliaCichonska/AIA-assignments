@@ -1,0 +1,94 @@
+
+{% extends "userview/header.html" %} {% block content %}
+<div class="container py-5">
+  <h1>Search movie</h1>
+  <div class="card">
+    <div class="card-header">
+    <form method="GET" action="/search">
+        <div class="form-group">
+          <label for="title-filter">Filter by Title:</label>
+          <input
+            type="text"
+            name="title"
+            id="title-filter"
+            class="form-control"
+            value="{{ request.GET.title }}"/>
+          <label for="genre-filter">Filter by Genre:</label>
+          <select name="genre" id="genre-filter" class="form-control">
+            <option value="">All Genres</option>
+            {% for genre in genres %}
+            
+                <option value="{{ genre.name }}" 
+                    {% if request.GET.genre == genre.name %}selected{% endif %}
+                >{{ genre.name }}</option>
+            {% endfor %}
+          </select>
+          <label for="rating-filter">Minimum Rating:</label>
+          <input
+            type="number"
+            name="rating"
+            id="rating-filter"
+            class="form-control"
+            value="{{ request.GET.rating }}"
+            min="0"
+            max="10"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+      </form>
+    </div> 
+    <div class="card-body">
+      <div class="col-xs-1-12">
+        {% if movies %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Movie title</th>
+              <th>Genres</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for movie in movies %}
+            <tr>
+              <td scope="row">
+                <a class="nav-link" href="/movie/{{movie.id}}"
+                  >{{ movie.title }}</a
+                >
+              </td>
+              <td>
+                {% for genre in movie.genres.all %}
+
+                <a class="nav-link" href="/genre/{{genre.id}}"
+                  >{{ genre.name }}</a
+                >
+
+                {% endfor %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p>No movies are available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if is_paginated %}
+  <div class="pagination">
+    <span class="page-links">
+      {% if page_obj.has_previous %}
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_next %}
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">next</a>
+      {% endif %}
+    </span>
+  </div>
+
+  {% endif %}
+</div>
+{% endblock %}
