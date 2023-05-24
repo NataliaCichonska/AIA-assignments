@@ -38,7 +38,9 @@ class IndexView(generic.ListView):
     context_object_name = 'movies'
     paginate_by=7
     def get_queryset(self):
-        return Movie.objects.order_by('-title')
+        movies =  Movie.objects.annotate(average_rating=Avg('rating__value'))
+        movies = movies.order_by('-average_rating')
+        return movies[:3]
 class MovieView(generic.DetailView):
     model = Movie
     template_name = 'userview/movie.html'

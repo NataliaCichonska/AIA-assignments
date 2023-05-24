@@ -1,10 +1,14 @@
 
     {% extends "userview/header.html" %} {% block content %}
     <div class="container py-5">
-      <h1>All movies</h1>
+      <h1>Movielens</h1>
       <div class="card">
-        <img class="card-img-top" src="holder.js/100x180/" alt="" />
+        <div class="card-header">
+          <h2>About us</h2>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sed mi tincidunt, varius orci in, ultrices augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque sit amet neque efficitur, consectetur tellus eu, consequat ante. Praesent accumsan nunc eget porta finibus. Fusce at dui eget risus vulputate luctus a congue lorem. Donec et ante sit amet turpis auctor maximus non non metus. Aenean dapibus eu libero eget tempus. Ut quis lorem non nisl fermentum finibus. Nullam ultrices aliquam nibh, ac aliquam orci imperdiet in. Etiam pretium ex a felis gravida, nec efficitur ligula pulvinar. Aliquam ut placerat ante, fermentum sodales orci. Cras placerat faucibus leo, id lacinia sapien commodo et. Donec ut sem id risus dapibus commodo. Aliquam leo elit, placerat eget mauris eget, gravida fringilla nulla. Morbi porta vitae magna vitae hendrerit. 
+        </div>
         <div class="card-body">
+          <h2>Top movies</h2>
           <div class="col-xs-1-12">
             {% if movies %}
             <table class="table">
@@ -12,6 +16,7 @@
                 <tr>
                   <th>Movie title</th>
                   <th>Genres</th>
+                  <th>Average Rating</th>
                 </tr>
               </thead>
               <tbody>
@@ -31,6 +36,9 @@
 
                     {% endfor %}
                   </td>
+                  <td>
+                    {{ movie.average_rating }}
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -39,6 +47,47 @@
             <p>No movies are available.</p>
             {% endif %}
           </div>
+          {% if user.is_authenticated %}
+          <h2>Recomendations</h2>
+          <div class="col-xs-1-12">
+            {% if recomendations %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Movie title</th>
+                  <th>Genres</th>
+                  <th>Average Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for movie in recomendations %}
+                <tr>
+                  <td scope="row">
+                    <a class="nav-link" href="/movie/{{movie.id}}"
+                      >{{ movie.title }}</a
+                    >
+                  </td>
+                  <td>
+                    {% for genre in movie.genres.all %}
+
+                    <a class="nav-link" href="/genre/{{genre.id}}"
+                      >{{ genre.name }}</a
+                    >
+
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {{ movie.average_rating }}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p>No recomendations are available.</p>
+            {% endif %}
+          </div>
+          {% endif %}
         </div>
       </div>
 
