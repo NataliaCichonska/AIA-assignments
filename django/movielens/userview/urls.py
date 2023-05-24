@@ -12,5 +12,6 @@ path("movie/<int:pk>", views.MovieView.as_view(), name="index"),
 path("register", views.register_request, name="register"),
 path("rate", views.rate_request, name="rate"),
 path('login/',auth_views.LoginView.as_view(template_name='userview/login.html'),name='login'),
-path('logout/',auth_views.LogoutView.as_view(template_name="userview/logout.html"),name='logout')
+path('logout/',auth_views.LogoutView.as_view(template_name="userview/logout.html"),name='logout'),
+path('search/',views.SearchView.as_view(),name='search')
 ]
