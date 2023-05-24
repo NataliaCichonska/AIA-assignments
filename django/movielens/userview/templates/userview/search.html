@@ -44,6 +44,7 @@
             <tr>
               <th>Movie title</th>
               <th>Genres</th>
+              <th>Average Rating</th>
             </tr>
           </thead>
           <tbody>
@@ -62,6 +63,9 @@
                 >
 
                 {% endfor %}
+              </td>
+              <td>
+                {{movie.average_rating}}
               </td>
             </tr>
             {% endfor %}

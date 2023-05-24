@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import login
 from .forms import NewUserForm, RateMovieForm
 from django.contrib import messages
+from django.db.models import Avg
 
 # def index(request : HttpRequest):
 #     movies = Movie.objects.order_by('-title')
@@ -53,7 +54,7 @@ class SearchView(generic.ListView):
     paginate_by = 7
 
     def get_queryset(self):
-        queryset = Movie.objects.order_by('-title')
+        queryset = Movie.objects.order_by('-title').annotate(average_rating=Avg('rating__value'))
 
         genre_filter = self.request.GET.get('genre')
         title_filter = self.request.GET.get('title')
@@ -66,7 +67,7 @@ class SearchView(generic.ListView):
             queryset = queryset.filter(genres__name__icontains=genre_filter)
 
         if rating_filter:
-            queryset = queryset.filter(rating__value__gte=rating_filter)
+            queryset = queryset.filter(average_rating__gte=rating_filter)
         return queryset
 
     def get_context_data(self, **kwargs):

@@ -23,6 +23,8 @@ class RateMovieForm(forms.Form):
     rating = forms.IntegerField(
         label = "Rating",
         required = True,
+        min_value= 0,
+        max_value= 10,
     )
     movie = UserModelChoiceField(queryset=Movie.objects.all(), label="Movie", required=True)
     def save(self, commit=True):
