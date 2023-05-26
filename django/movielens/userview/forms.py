@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django import forms
-from .models import Movie, Genre, Rating
+from .models import Movie, Genre, Rating, Comment
 
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -32,4 +32,11 @@ class RateMovieForm(forms.Form):
         rating.movie=self.cleaned_data['movie']
         rating.value=self.cleaned_data['rating']
         return rating
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(max_length=1000)
+    def save(self, commit=True):
+        comment = Comment()
+        comment.comment=self.cleaned_data['comment']
+        return comment
 

@@ -1,60 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>Movielens</title>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    {% extends "userview/header.html" %} {% block content %}
-    {% if response %}
-    <div class="card">
-      <img class="card-img-top" src="holder.js/100x180/" alt="">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">You are looking at the movie with id: {{response.id}}</h4>
-            <h5 class="card-subtitle text-muted">{{response.title}}</h5>
-          </div>
-          <img src="holder.js/100x180/" alt="">
-          <div class="card-body">
-            <ul class="nav navbar-nav">
-            {% for genre in response.genres.all%}
-            <li class="nav-item">
-              <a class="nav-link" href="/genre/{{genre.id}}">{{ genre.name }}</a>
-            </li>
-            {% endfor %}</ul>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Movielens</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+</head>
+
+<body>
+  {% extends "userview/header.html" %} {% block content %}
+  {% load crispy_forms_tags %}
+  {% load static %}
+  {% if response %}
+
+  <div class="container py-5">
+    <div class="card-body">
+
+      <div class="row">
+        <div class="col-xs-1-6">
+
+          <h2 class="card-title">{{response.title}}</h2>
+          <h5 class="card-subtitle text-muted">Avarage rating: {{avarage_rating}}</h5>
+          {% if response.year %}
+          <h6 class="card-subtitle text-muted mt-2">Year: {{response.year}}</h6>
+          {% endif %}
+          {% if response.director %}
+          <h6 class="card-subtitle text-muted mt-2">Director: {{response.director}}</h6>
+          {% endif %}
+          {% if response.description %}
+          <p class="card-subtitle text-muted mt-2 mb-4">{{response.description}}</p>
+          {% endif %}
+          {% if response.imdbLink %}
+          <a class="card-link" href="{{response.imdbLink}}" target="_blank">{{response.imdbLink}}</a>
+          {% endif %}
+        </div>
+        <div class="col-xs-1-6 ml-5">
+          {% if response.image %}
+          <img class="mt-4" src="http://127.0.0.1:8000/media/{{response.image.img}}" width="200" />
+          {% endif %}
+
         </div>
       </div>
+
     </div>
-    {% endif %}
-    {% endblock %}
 
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
 
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+
+    <div class="card-body">
+      <h4 class="card-subtitle">Genres:</h4>
+      <ul>
+        {% for genre in response.genres.all%}
+        <li>
+          <a class="nav-link" href="/genre/{{genre.id}}">{{ genre.name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <h4 class="card-subtitle mb-2">Comments:</h4>{% if user.is_authenticated %}
+      <a href="/comment/{{response.id}}">Add comment</a>
+      {% endif %}
+      {% for comment in comments.all%}
+      <div class="card mb-2 mt-1">
+        <div class="card-body">
+          <h4 class="card-title">{{comment.comment}}</h4>
+          <p class="card-text">User: {{comment.user}}</p>
+          <p>{{comment.timestamp}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+  </div>
+</body>
+
+{% endif %}
+{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+  integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+  integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
 </html>

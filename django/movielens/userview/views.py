@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.template import loader
-from .models import Movie, Genre, Rating
+from .models import Movie, Genre, Rating, Comment
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login
-from .forms import NewUserForm, RateMovieForm
+from .forms import NewUserForm, RateMovieForm, CommentForm
 from django.contrib import messages
 from django.db.models import Avg
 
@@ -15,14 +15,25 @@ from django.db.models import Avg
 #     'movies' : movies
 #     }
 #     return HttpResponse(template.render(context,request))
-# def view_movie(request: HttpRequest, movie_id):
-#     template=loader.get_template('userview/movie.html')
-#     obj=get_object_or_404(Movie, pk=movie_id)
-#     print(obj.title)
-#     context = {
-#     'response' : obj
-#     }
-#     return HttpResponse(template.render(context,request))
+
+
+def view_movie(request: HttpRequest, movie_id):
+    template=loader.get_template('userview/movie.html')
+    movie=get_object_or_404(Movie, pk=movie_id)
+    ratings=Rating.objects.filter(movie=movie_id)
+    comments=Comment.objects.filter(movie=movie_id)
+    sum=0
+    for rating in ratings:
+        sum+=rating.value
+    avarage = sum/len(ratings)
+    context = {
+    'response' : movie,
+    'avarage_rating': avarage,
+    'comments': comments
+    }
+    return HttpResponse(template.render(context,request))
+
+
 # def view_genre(request: HttpRequest, genre_id):
 #     template=loader.get_template('userview/genre.html')
 #     obj = get_object_or_404(Genre,pk=genre_id)
@@ -41,10 +52,19 @@ class IndexView(generic.ListView):
         movies =  Movie.objects.annotate(average_rating=Avg('rating__value'))
         movies = movies.order_by('-average_rating')
         return movies[:3]
-class MovieView(generic.DetailView):
-    model = Movie
-    template_name = 'userview/movie.html'
-    context_object_name = 'response'
+# class MovieView(generic.DetailView):
+#     model = Movie
+#     template_name = 'userview/movie.html'
+#     context_object_name = 'response'
+#     def get_context_data(self, **kwargs):
+#         pk = kwargs.get('pk') # this is the primary key from your URL
+#         print(pk,"-----------------")
+#     # your other code
+#         context = super(MovieView, self).get_context_data(**kwargs)
+#         context['ratings'] = Rating.objects.filter(movie=pk)
+#         return context
+
+
 class GenreView(generic.DetailView):
     model = Genre
     template_name = 'userview/genre.html'
@@ -117,6 +137,29 @@ def rate_request(request):
         form = RateMovieForm()
         context = {'form': form}
         return render (request=request, template_name="userview/rate.html", context={"rate_form":form})
+    else:
+        return redirect("index")
+
+def comment_request(request,movie_id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                user=request.user
+                comment=form.save()
+                print(comment.comment)
+                comment.user = user
+                movie = Movie.objects.get(id=movie_id)
+                comment.movie = movie
+                comment.save()
+                messages.success(request, "Comment successful." )
+                redirectUrl = "/movie/"+ str(movie_id)
+                return redirect(redirectUrl)
+            else:
+                messages.error(request, "Unsuccessful comment. Something went wrong")
+        form = CommentForm()
+        context = {'form': form}
+        return render (request=request, template_name="userview/comment.html", context={"comment_form":form})
     else:
         return redirect("index")
 

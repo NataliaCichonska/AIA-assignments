@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,9 @@ SECRET_KEY = 'django-insecure-ve-7zf*t@d9pgur2!2waqxl5sjkzd6tz!s78ez=flm43qjqh*a
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT=os.path.join(BASE_DIR,"media")
 
 DATABASES = {
 'default': {
@@ -48,8 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userview.apps.UserviewConfig',
 'crispy_forms',
-'crispy_bootstrap5'
-
+'crispy_bootstrap5',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
