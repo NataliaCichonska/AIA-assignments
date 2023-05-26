@@ -11,11 +11,11 @@ done ii. Movie Title,
 done iii. Minimum rating.  
 b. A guest viewer can view the details of a movie by clicking on an item in the
 search list. Details of a movie contain the following informations:  
-ii. Average rating of a movie,  
-iii. Cross reference to IMDB,  
-iv. Image gallery with one image dedicated as a front image  
-v. List of comments to the movie  
-e. Logged in users can post a comment under a movie. [N]    
+done ii. Average rating of a movie,  
+done iii. Cross reference to IMDB,  
+done iv. Image gallery with one image dedicated as a front image  
+done v. List of comments to the movie  
+done e. Logged in users can post a comment under a movie. [N]    
 1. Prepare templates for (the templates should extend the layout template):  
 done a. the home page - the home page consists of:  
 done i. a brief introduction to the portal (you can fill it with lorem)  

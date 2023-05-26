@@ -17,11 +17,21 @@
   <body>
     {% extends "userview/header.html" %} {% block content %}
     <!--Login-->{% load crispy_forms_tags %}
-
     <div class="container py-5">
-      <h1>Log Out</h1>
-      <h2>You have been logged out</h2>
-      <p class="text-center"><a href="/login">Log in</a> back.</p>
+      <h1>Comment movie</h1>
+      <form method="POST">
+        {% csrf_token %} {{ comment_form|crispy }}
+        <button class="btn btn-primary" type="submit">Add comment</button>
+      </form>
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
     </div>
     {% endblock %}
 
